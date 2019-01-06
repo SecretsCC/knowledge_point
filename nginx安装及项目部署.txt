@@ -1,0 +1,116 @@
+Nginx Install:
+Nginx是一款高性能服务器,反向代理服务器用作负载分担
+
+##第一步: 安装依赖
+在CentOS系统中,选定/usr/local为安装目录,安装依赖
+    1. gcc: nginx编译依赖gcc环境
+	指令: yum install gcc-c++
+    2. Pcre: 兼容正则表达式库
+	指令: yum install -y pcre pcre-devel
+    3. zlib: 提供压缩解压方式
+	指令: yum install -y zlib zlib-devel
+    4. openssl: nginx支持http也支持htts
+	指令: yum install -y openssl openssl-devel
+
+依赖安装完成后,就可以安装nginx了
+
+
+##第二步: 安装nginx
+官网: http://nginx.org/en/download.html
+在官网上有各个版本的nginx, 选择最新的稳点版本nginx-1.14.2
+安装: 
+    1. 先下载
+	指令: sudo wget http://nginx.org/download/nginx-1.14.2.tar.gz
+    2. 下载后解压
+	指令: sudo tar -zxvf nginx-1.14.2.tar.gz
+    3. 进入解压后的文件夹
+	指令: cd nginx-1.14.2
+    4. 安装
+	指令: make
+	     make install
+如果安装成功,在/usr/local/下会有nginx文件,/user/local/nginx下 会有conf、sbin、html文件夹
+
+
+
+##使用
+1. 启动
+    进入nginx下的sbin文件夹
+    指令: cd /usr/local/nginx/sbin
+    该文件夹下有个nginx,启动即可
+    指令: ./nginx
+    检测是否启动: ps -ef | grep nginx
+    会有两个进程,一个master一个worker,证明启动成功
+    启动后进入相应IP地址,会有nginx的页面
+
+2.停止以及重启指令
+    ./nginx -t 测试配置是否正确
+    ./nginx -s reload 加载最新配置
+    ./nginx -s stop  立即停止
+    ./nginx -s quit 优雅停止
+    ./nginx -s reopen 重新打开日志
+
+3.配置
+    配置文件在nginx文件下的conf文件夹下
+    指令: cd /usr/local/nginx/conf/nginx.conf
+    配置文件具体信息:
+	全局段落:
+		worker_processes  1;	//工作进程, 配置了一个, 就是上面的一个master主进程和一个worker工作进程. 参数调整: 最大可以使CPU数量*核数
+	
+
+
+		events {
+ 		    worker_connections  1024;	//一个worker可以保持1024个连接,不可盲目更改,要和硬件配合(网卡,CPU)
+                }
+		
+		在下面http区段里有个server,配置虚拟主机
+
+		server {
+          		listen       80;	#监听端口,默认80如果被占用可以更改
+          		server_name a.com;	#监听域名,如有多个,空格隔开
+ 
+          	   	location / {
+              			root html;	#根目录定位
+              			index index.html  index.html;	#默认索引页
+          		}
+      		}
+    配置完成后,将nginx重新加载,指令: ./sbin/nginx -s reload  更改即可生效
+
+
+4.日志管理
+
+日志在logs文件夹下,但是日志的格式可以在nginx.conf的http区段更改
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+   
+
+每个虚拟主机的日志应该是分开的,在server里添加一行
+	access_log logs/a.com.log main  //意思是a.com使用main格式日志,并保存在logs/a.com.log文件夹中
+
+
+
+##部署VUE项目
+首相将VUE项目打包,在项目文件运行npm run build, 生成dist文件夹
+将dist文件夹上传到服务器的目录下,我选择/usr/local/nginx/html/vue_project下
+配置文件
+	server {
+          listen       80;
+          server_name  localhost;
+
+          #charset koi8-r;
+
+          #access_log  logs/host.access.log  main;
+
+          location / {
+              root   html/vue_project; #默认访问目录
+              index  index.html; #默认访问文件
+              try_files $uri $uri/ /index.html; #目录不存在则执行index.html
+          }
+重启nginx, 指令: ./sbin/nginx -s reload 
+访问IP地址即可成功.
+
+
+		
+
+
+
