@@ -1,0 +1,22 @@
+JPA 定义了对象关系映射,以及实体对象持久化的标准接口. 是Spring 基于ORM框架
+
+创建JAVA实体类,属性和数据库中的属性向对应
+通过注解@Entity声明实体可以进行ORM映射
+@ID 声明实体类中对应数据库中主键的属性
+@GeneratedValue(strategy = GenerationType.AUTO) 定义主键生成策略
+
+MVC模式
+Controller -> Service -> Repository
+
+
+Controllers
+@RestController 注解注明该类为Controller,默认类中的方法都会以json的格式返回
+@RequestMapping 请求映射. @RequestMapping(value = "路径", method= RequestMethod.GET), 如果不写method参数,默认支持所有REST
+
+
+
+参数注解
+POST传参数用@RequestParam
+GET传参数用@PathVariable
+
+
