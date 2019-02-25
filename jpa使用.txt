@@ -20,3 +20,17 @@ POST传参数用@RequestParam
 GET传参数用@PathVariable
 
 
+
+
+
+##复杂查询
+根据自己的条件自定义查询, 到Repository的借口里自定义
+命名要符合标准
+例如:	根据作者查询书名
+	List<Book> findByAuthor(String author);
+	List<Book> findByAuthorAndStatus(String author, int status);
+	List<Book> findByDescriptionEndswith(String des)
+
+
+
+
