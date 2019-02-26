@@ -1,0 +1,75 @@
+##注解
+1. @RestController注解
+在类的上面添加,把类标记为web控制器,默认类中的方法都会以json的格式返回
+如果需要使用页面开发只要使用@Controller
+
+
+2. @RequestMapping(value="/路径",method = RequestMethod.GET)  请求映射
+提供路由信息,告诉Spring任何来自"/路径" 的HTTP请求
+应用在方法或类上,让方法有了处理请求的作用
+简写,GET就用GetMapping,POST用PostMapping
+
+
+@RestController 和 @RequestMapping注解是
+3. @RestController
+
+@Controller 按照自己的模板来返回
+
+##参数处理
+传参 @PathVariable("参数") 参数才可以被接收
+
+
+##POST
+在参数前加@RequestParamas("参数名")
+
+#自定义Filter
+添加@Configurationz注解,将自定义Filter加入过滤链
+
+#自定义Property
+在resources文件加下的application.properties中或者application.yml, 区别是配置的格式不同
+也可以把配置文件放置在config文件夹下,优先执行
+yml格式:
+Server:
+  port: 8081
+  Context-path: /api
+Logging:
+  Level:
+    Root: info
+    Com.lm: debug
+也可以自定义属性
+map
+  name: cy
+  Gender: meal
+
+自定义的属性提取到实体类中,先新建类
+  @Value("${map.name}")
+  Private String name;
+  @Value("${map.gender}")
+  Private String gender;
+
+注入实体对象
+创建对象类
+@Component  注册为组件
+@ConfigurationProperties(prefix = "配置里的名字")
+ public class book {
+	private String name;
+	private String gender;
+}
+
+@Autowired注入实体对象
+
+
+##JPA数据库操作
+#配置
+1. JPA(Java Persistence API, Java持久化API), 定义了对象关系映射(ORM)以及实体对象持久化的标准接口.Hibernate实现了JPA的一个ORM框架
+   JPA是一套接口规范,不是框架
+
+2. Spring Data JPA
+基于JPA简化了数据访问层的实现,提供了一种类似于声明式编程的方法,开发者只需要编写数据访问接口(Repository),Spring Data JPA就能基于接口中的方法命名自动的生成实现.
+
+3. 如何使用
+可以在创建项目的时候引用,也可以在pom.xml中添加配置
+@Entity 声明实体可以进行映射
+@Id	对应数据库主键	@GeneratedValue(strategy = GenerationType.AUTO)
+
+
